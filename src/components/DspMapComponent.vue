@@ -147,7 +147,7 @@ function buildDetailButtonContent(L: {
   const button = document.createElement('button')
   button.type = 'button'
   button.className = 'dsp-aoi-map-detail-btn'
-  button.textContent = 'Ver Detalhes'
+  button.textContent = 'View Details'
   container.appendChild(button)
 
   L.DomEvent?.disableClickPropagation(container)
