@@ -1,10 +1,21 @@
 import type { TerritoryBoundaryBox } from '@/types/territory'
 
-/** Height of the `.dsp-map` container in HomeView. */
-export const DSP_MAP_HEIGHT_PX = 520
+/** Viewport height fraction used by `.dsp-map` (aligned with consulta-publica). */
+export const DSP_MAP_HEIGHT_VH = 70
+
+/** Fallback map height in px when `window` is unavailable (SSR / tests). */
+export const DSP_MAP_HEIGHT_FALLBACK_PX = 560
 
 /** Reference width for estimating the zoom level before the map exists. */
 export const DSP_MAP_WIDTH_PX = 960
+
+/** Estimates `.dsp-map` height in pixels from the current viewport. */
+export function getDspMapHeightPx(): number {
+  if (typeof window !== 'undefined' && window.innerHeight > 0) {
+    return Math.round(window.innerHeight * (DSP_MAP_HEIGHT_VH / 100))
+  }
+  return DSP_MAP_HEIGHT_FALLBACK_PX
+}
 
 const TILE_SIZE = 256
 const MAX_ZOOM = 16
@@ -36,7 +47,7 @@ export function bboxToMapView(
   bbox: TerritoryBoundaryBox,
   mapSize: { width: number; height: number } = {
     width: DSP_MAP_WIDTH_PX,
-    height: DSP_MAP_HEIGHT_PX,
+    height: getDspMapHeightPx(),
   },
 ): MapViewFromBbox {
   const center: [number, number] = [

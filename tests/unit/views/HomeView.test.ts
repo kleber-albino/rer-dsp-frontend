@@ -11,8 +11,10 @@ import {
 } from '@/services/totalizerService'
 import { fetchAoiGeometryById } from '@/services/geoserverAoiService'
 import { getTerritoryBoundaryBox } from '@/services/territoryService'
+import { getInstallationConfig } from '@/services/configService'
 import { DSP_MAP_OPTIONS } from '@/config/mapOptions'
 import { bboxToMapView } from '@/utils/bboxToMapView'
+import { FALLBACK_INSTALLATION_CONFIG } from '@/config/installationConfigFallback'
 
 const { scrollToElement } = vi.hoisted(() => ({
   scrollToElement: vi.fn(),
@@ -81,11 +83,15 @@ const {
   showDetailButton,
   clearSelection,
   fitBounds,
+  setView,
+  exitFullscreenIfNeeded,
 } = vi.hoisted(() => ({
   showSelectedAoiGeometry: vi.fn(),
   showDetailButton: vi.fn(),
   clearSelection: vi.fn(),
   fitBounds: vi.fn(),
+  setView: vi.fn(),
+  exitFullscreenIfNeeded: vi.fn(),
 }))
 
 vi.mock('@/components/DspMapComponent.vue', () => ({
@@ -126,7 +132,9 @@ vi.mock('@/components/DspMapComponent.vue', () => ({
       removeDetailButton: vi.fn(),
       showSelectedAoiGeometry,
       fitBounds,
+      setView,
       clearSelection,
+      exitFullscreenIfNeeded,
     },
   },
 }))
@@ -381,14 +389,113 @@ describe('HomeView', () => {
     expect(map.props('options').map.config.zoom).toBe(expectedView.zoom)
   })
 
-  it('should mount map with default options when initial boundary-box fails', async () => {
+  it('should mount map with planet view when initial boundary-box fails', async () => {
     vi.mocked(getTerritoryBoundaryBox).mockRejectedValueOnce(new Error('bbox unavailable'))
 
     const wrapper = await mountHome()
 
     const map = wrapper.findComponent({ name: 'DspMapComponent' })
     expect(map.exists()).toBe(true)
-    expect(map.props('options')).toEqual(DSP_MAP_OPTIONS)
+    expect(map.props('options').map.config.center).toEqual([0, 0])
+    expect(map.props('options').map.config.zoom).toBe(0)
+    expect(fitBounds).not.toHaveBeenCalled()
+  })
+
+  it('should mount map with manual mode without calling boundary-box', async () => {
+    vi.mocked(getInstallationConfig).mockResolvedValueOnce({
+      ...FALLBACK_INSTALLATION_CONFIG,
+      map: {
+        initialView: {
+          mode: 'manual',
+          latitude: 39.5,
+          longitude: -8.0,
+          zoom: 7,
+        },
+      },
+    })
+
+    const wrapper = await mountHome()
+
+    expect(getTerritoryBoundaryBox).not.toHaveBeenCalled()
+
+    const map = wrapper.findComponent({ name: 'DspMapComponent' })
+    expect(map.props('options').map.config.center).toEqual([39.5, -8.0])
+    expect(map.props('options').map.config.zoom).toBe(7)
+    expect(map.props('options').tools.center.target).toBe('initial')
+  })
+
+  it('should mount map with planet mode without calling boundary-box', async () => {
+    vi.mocked(getInstallationConfig).mockResolvedValueOnce({
+      ...FALLBACK_INSTALLATION_CONFIG,
+      map: {
+        initialView: {
+          mode: 'planet',
+        },
+      },
+    })
+
+    const wrapper = await mountHome()
+
+    expect(getTerritoryBoundaryBox).not.toHaveBeenCalled()
+
+    const map = wrapper.findComponent({ name: 'DspMapComponent' })
+    expect(map.props('options').map.config.center).toEqual([0, 0])
+    expect(map.props('options').map.config.zoom).toBe(0)
+    expect(map.props('options').tools.center.target).toBe('initial')
+  })
+
+  it('should reset to configured initial view on clear when manual map view is set', async () => {
+    vi.mocked(getInstallationConfig).mockResolvedValueOnce({
+      ...FALLBACK_INSTALLATION_CONFIG,
+      map: {
+        initialView: {
+          mode: 'manual',
+          latitude: 39.5,
+          longitude: -8.0,
+          zoom: 7,
+        },
+      },
+    })
+
+    const wrapper = await mountHome()
+    vi.clearAllMocks()
+    vi.mocked(getTotalizers).mockResolvedValue([
+      {
+        name: 'Registered properties',
+        code: 'AREA_OF_INTEREST',
+        value: 100,
+        unitOfMeasurement: 'un.',
+      },
+    ])
+
+    const searchFilter = wrapper.findComponent(SearchFilterComponent)
+    await searchFilter.vm.$emit('clear')
+    await flushPromises()
+
+    expect(clearSelection).toHaveBeenCalled()
+    expect(getTerritoryBoundaryBox).not.toHaveBeenCalled()
+    expect(setView).toHaveBeenCalledWith([39.5, -8.0], 7)
+    expect(fitBounds).not.toHaveBeenCalled()
+  })
+
+  it('should reset to planet view on clear when territorial bbox is unavailable', async () => {
+    const wrapper = await mountHome()
+    vi.clearAllMocks()
+    vi.mocked(getTotalizers).mockResolvedValue([
+      {
+        name: 'Registered properties',
+        code: 'AREA_OF_INTEREST',
+        value: 100,
+        unitOfMeasurement: 'un.',
+      },
+    ])
+    vi.mocked(getTerritoryBoundaryBox).mockRejectedValueOnce(new Error('bbox unavailable'))
+
+    const searchFilter = wrapper.findComponent(SearchFilterComponent)
+    await searchFilter.vm.$emit('clear')
+    await flushPromises()
+
+    expect(setView).toHaveBeenCalledWith([0, 0], 0)
     expect(fitBounds).not.toHaveBeenCalled()
   })
 

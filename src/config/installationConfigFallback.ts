@@ -100,4 +100,12 @@ export const FALLBACK_INSTALLATION_CONFIG: InstallationConfig = {
     date: 'dd/MM/yyyy',
     dateTime: 'dd/MM/yyyy HH:mm:ss',
   },
+  map: {
+    initialView: {
+      mode: 'territorial_bbox',
+      latitude: null,
+      longitude: null,
+      zoom: null,
+    },
+  },
 }

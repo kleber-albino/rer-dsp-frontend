@@ -69,12 +69,26 @@ export interface FormatsConfig {
   dateTime: string
 }
 
+export type InitialMapViewMode = 'territorial_bbox' | 'manual' | 'planet'
+
+export interface InitialMapViewConfig {
+  mode: InitialMapViewMode
+  latitude?: number | null
+  longitude?: number | null
+  zoom?: number | null
+}
+
+export interface MapUiConfig {
+  initialView?: InitialMapViewConfig | null
+}
+
 export interface InstallationConfig {
   hierarchy: HierarchyLevelConfig[]
   screens: ScreensConfig
   kpis: HomeKpisConfig
   areaOfInterest: AreaOfInterestMeasuresConfig
   formats: FormatsConfig
+  map?: MapUiConfig | null
 }
 
 export type InstallationScreenId = keyof ScreensConfig

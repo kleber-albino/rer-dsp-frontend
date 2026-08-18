@@ -1,5 +1,8 @@
 import type { MapOptionsConfig } from '@rural-environmental-registry/map_component/dist/types'
 
+/** Minimum zoom level for map clicks to trigger AOI lookup. */
+export const DSP_ZOOM_TO_ALLOW_CLICK = 8
+
 export const DSP_MAP_OPTIONS: MapOptionsConfig = {
   map: {
     config: {

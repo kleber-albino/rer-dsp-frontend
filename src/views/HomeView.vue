@@ -39,9 +39,15 @@ import {
 import { getTerritoryBoundaryBox } from '@/services/territoryService'
 import { DSP_MAP_OPTIONS } from '@/config/mapOptions'
 import { bboxToMapView } from '@/utils/bboxToMapView'
+import {
+  PLANET_MAP_VIEW,
+  resolveInitialMapStrategy,
+  type ResolvedInitialMapStrategy,
+  type ResolvedInitialMapView,
+} from '@/utils/resolveInitialMapView'
 import { darkenHex } from '@/utils/darkenColor'
 import { scrollToElement } from '@/utils/scrollToElement'
-import type { HomeKpisConfig } from '@/types/installationConfig'
+import type { HomeKpisConfig, InstallationConfig } from '@/types/installationConfig'
 import type { DetailByIdentifierDTO } from '@/types/totalizer'
 import type { TerritoryBoundaryBox } from '@/types/territory'
 import DspMapComponent from '@/components/DspMapComponent.vue'
@@ -71,6 +77,37 @@ const hierarchyFields = ref<Record<HierarchyLevelKey, HierarchyFieldConfig>>(hie
 const mapRef = ref<InstanceType<typeof DspMapComponent> | null>(null)
 const searchFilterRef = ref<InstanceType<typeof SearchFilterComponent> | null>(null)
 const mapOptions = ref<MapOptionsConfig | null>(null)
+const installationConfig = ref<InstallationConfig>(FALLBACK_INSTALLATION_CONFIG)
+const initialMapStrategy = ref<ResolvedInitialMapStrategy>(
+  resolveInitialMapStrategy(FALLBACK_INSTALLATION_CONFIG),
+)
+
+function buildMapOptionsFromView(
+  view: ResolvedInitialMapView,
+  options: { fixedInitialView?: boolean } = {},
+): MapOptionsConfig {
+  const fixedInitialView = options.fixedInitialView ?? false
+  return {
+    ...DSP_MAP_OPTIONS,
+    map: {
+      ...DSP_MAP_OPTIONS.map,
+      config: {
+        ...DSP_MAP_OPTIONS.map.config,
+        center: view.center,
+        zoom: view.zoom,
+      },
+    },
+    tools: fixedInitialView
+      ? {
+          ...DSP_MAP_OPTIONS.tools,
+          center: {
+            ...DSP_MAP_OPTIONS.tools?.center,
+            target: 'initial',
+          },
+        }
+      : DSP_MAP_OPTIONS.tools,
+  }
+}
 
 function buildMapOptionsFromBbox(bbox: TerritoryBoundaryBox): MapOptionsConfig {
   const { center, zoom } = bboxToMapView(bbox)
@@ -206,11 +243,21 @@ async function zoomToTerritory(
 }
 
 async function zoomToInitialTerritory(): Promise<void> {
+  const strategy = initialMapStrategy.value
+  if (strategy.kind === 'manual' || strategy.kind === 'planet') {
+    mapRef.value?.setView(strategy.view.center, strategy.view.zoom)
+    return
+  }
+
   try {
     const bbox = await getTerritoryBoundaryBox({})
     applyTerritoryBounds(bbox)
   } catch (error) {
-    console.warn('Initial territory boundary box unavailable.', error)
+    console.warn(
+      'Initial territory boundary box unavailable — using planet map view.',
+      error,
+    )
+    mapRef.value?.setView(PLANET_MAP_VIEW.center, PLANET_MAP_VIEW.zoom)
   }
 }
 
@@ -232,12 +279,26 @@ async function loadInitialKpis(): Promise<void> {
 }
 
 async function loadInitialMapOptions(): Promise<void> {
+  const strategy = initialMapStrategy.value
+  if (strategy.kind === 'manual') {
+    mapOptions.value = buildMapOptionsFromView(strategy.view, { fixedInitialView: true })
+    return
+  }
+
+  if (strategy.kind === 'planet') {
+    mapOptions.value = buildMapOptionsFromView(strategy.view, { fixedInitialView: true })
+    return
+  }
+
   try {
     const bbox = await getTerritoryBoundaryBox({})
     mapOptions.value = buildMapOptionsFromBbox(bbox)
   } catch (error) {
-    console.warn('Initial territory boundary box unavailable — using default map view.', error)
-    mapOptions.value = DSP_MAP_OPTIONS
+    console.warn(
+      'Initial territory boundary box unavailable — using planet map view.',
+      error,
+    )
+    mapOptions.value = buildMapOptionsFromView(PLANET_MAP_VIEW, { fixedInitialView: true })
   }
 }
 
@@ -396,6 +457,8 @@ const onDownloadFeatures = async (aoiId: string) => {
 
 async function loadInstallationConfig(): Promise<void> {
   const installation = await getInstallationConfig()
+  installationConfig.value = installation
+  initialMapStrategy.value = resolveInitialMapStrategy(installation)
   searchConfig.value = buildSearchFormConfig(installation, 'home')
   hierarchyFields.value = buildHierarchyFieldsByKey(installation)
   kpiConfig.value = installation.kpis
@@ -566,7 +629,7 @@ onMounted(async () => {
 
 .dsp-map-placeholder {
   width: 100%;
-  height: 520px;
+  height: 70vh;
   margin: 0 0 24px;
   border: 1px solid #d9d9d9;
   background: #f5f5f5;
