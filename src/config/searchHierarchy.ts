@@ -1,7 +1,7 @@
 import type {
   InstallationConfig,
   InstallationScreenId,
-  ScreenConfig,
+  ScreenFilterConfig,
 } from '@/types/installationConfig'
 import type { HierarchyLevelKey } from '@/types/hierarchy'
 import { FALLBACK_INSTALLATION_CONFIG } from '@/config/installationConfigFallback'
@@ -61,7 +61,7 @@ export function buildSearchFormConfig(
   config: InstallationConfig,
   screenId: InstallationScreenId,
 ): SearchFormConfig {
-  const screen: ScreenConfig = config.screens[screenId]
+  const screen: ScreenFilterConfig = config.screens[screenId]
   return {
     title: screen.title,
     hierarchyKeys: [...screen.hierarchyKeys],

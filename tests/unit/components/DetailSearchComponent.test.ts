@@ -114,12 +114,12 @@ describe('DetailSearchComponent', () => {
     })
 
     const rows = wrapper.findAll('.property-row')
-    expect(rows).toHaveLength(3)
+    expect(rows).toHaveLength(2)
     expect(rows[0].text()).toContain('Município')
     expect(rows[0].text()).toContain('Estado')
-    expect(rows[1].text()).toContain('Latitude')
+    expect(rows[0].text()).toContain('Latitude')
     expect(rows[1].text()).toContain('Longitude')
-    expect(rows[2].text()).toContain('Área')
+    expect(rows[1].text()).toContain('Área')
   })
 
   it('should render features download button enabled and emit on click', async () => {
@@ -144,4 +144,87 @@ describe('DetailSearchComponent', () => {
     const button = wrapper.find('.actions .br-button')
     expect(button.attributes('disabled')).toBeDefined()
   })
+
+  it('should render exclusive fields from attributes and omit unused structural values', async () => {
+    vi.mocked(peekInstallationConfig).mockReturnValue(exclusiveInstallation)
+
+    const wrapper = mount(DetailSearchComponent, {
+      props: {
+        detail: {
+          ...detail,
+          otherIds: ['GO-1'],
+          attributes: {
+            id: 'DF123456789012',
+            nome: 'Sample property',
+            'calculated.latitude': '-15.793889',
+          },
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Identificador')
+    expect(wrapper.text()).toContain('Property name')
+    expect(wrapper.text()).toContain('Sample property')
+    expect(wrapper.text()).toContain('Centroid latitude')
+    expect(wrapper.text()).toContain('-15.793889')
+    expect(wrapper.text()).not.toContain('Município')
+    expect(wrapper.text()).not.toContain('Brasília')
+    expect(wrapper.text()).not.toContain('Data de registro')
+    expect(wrapper.find('.header-detail').exists()).toBe(false)
+    expect(wrapper.text()).toContain('Outros próximos')
+    expect(wrapper.text()).toContain('GO-1')
+
+    const button = wrapper.find('.actions .br-button')
+    expect(button.text()).toContain('Baixar feições')
+    await button.trigger('click')
+    expect(wrapper.emitted('download-features')).toEqual([['DF123456789012']])
+  })
+
+  it('should format perimeter_m attribute with two decimal places', () => {
+    vi.mocked(peekInstallationConfig).mockReturnValue({
+      ...ptbrInstallation,
+      screens: {
+        ...ptbrInstallation.screens,
+        home: {
+          ...ptbrInstallation.screens.home,
+          detail: {
+            ...ptbrInstallation.screens.home.detail!,
+            fields: [{ field: 'perimeter_m', label: 'Perímetro em metros(m)' }],
+          },
+        },
+      },
+    })
+
+    const wrapper = mount(DetailSearchComponent, {
+      props: {
+        detail: {
+          ...detail,
+          attributes: {
+            perimeter_m: 53944.7195802754,
+          },
+        },
+      },
+    })
+
+    expect(wrapper.text()).toContain('Perímetro em metros(m)')
+    expect(wrapper.text()).toContain('53944.72')
+  })
 })
+
+const exclusiveInstallation: InstallationConfig = {
+  ...ptbrInstallation,
+  screens: {
+    ...ptbrInstallation.screens,
+    home: {
+      ...ptbrInstallation.screens.home,
+      detail: {
+        ...ptbrInstallation.screens.home.detail!,
+        fields: [
+          { field: 'id', label: 'Identificador' },
+          { field: 'nome', label: 'Property name' },
+          { field: 'calculated.latitude', label: 'Centroid latitude' },
+        ],
+      },
+    },
+  },
+}

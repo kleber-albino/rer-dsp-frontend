@@ -39,8 +39,5 @@ export function formatPropertyMeasures(value: number | string | undefined | null
     return '—'
   }
 
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(numeric)
+  return numeric.toFixed(2)
 }

@@ -38,7 +38,7 @@ const otherIds = computed(() =>
 )
 
 function readFieldValue(field: DetailFieldConfig): string {
-  const raw = readDetailFieldValue(props.detail, field.key)
+  const raw = readDetailFieldValue(props.detail, field)
   if (raw === undefined || raw === null || raw === '') {
     return config.emptyValue
   }
@@ -76,7 +76,10 @@ function onDownloadFeatures(): void {
     <h2 class="section-title">{{ config.sectionTitle }}</h2>
 
     <div class="details-card">
-      <div class="header-detail">
+      <div
+        v-if="headerFields.length"
+        class="header-detail"
+      >
         <div
           v-for="field in headerFields"
           :key="field.key"
@@ -88,7 +91,10 @@ function onDownloadFeatures(): void {
         </div>
       </div>
 
-      <hr class="divider" />
+      <hr
+        v-if="headerFields.length"
+        class="divider"
+      />
 
       <h3 class="property-title">{{ config.areaOfInterestSectionTitle }}</h3>
 
@@ -183,8 +189,8 @@ function onDownloadFeatures(): void {
 }
 
 .property-row {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px 32px;
   margin-bottom: 30px;
 }
@@ -194,8 +200,7 @@ function onDownloadFeatures(): void {
 }
 
 .property-row .field {
-  flex: 0 1 180px;
-  min-width: 140px;
+  min-width: 0;
 }
 
 .field p {
@@ -264,13 +269,12 @@ function onDownloadFeatures(): void {
   }
 
   .property-row {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 16px;
   }
 
   .property-row .field {
-    flex: 1 1 auto;
     min-width: 0;
   }
 

@@ -1,58 +1,84 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import {
-  aboutUiConfig,
-  getAboutTabById,
-  isAboutTabId,
-  type AboutTabId,
-} from '@/config/aboutUi'
+import { getAboutTabById, isAboutTabId } from '@/config/aboutUi'
+import { getAboutConfig } from '@/services/aboutService'
+import { renderMarkdown } from '@/utils/renderMarkdown'
+import type { AboutConfig } from '@/types/aboutConfig'
 import MoreContents from '@/components/MoreContents.vue'
 import { getMoreContentsCards } from '@/config/moreContentsUi'
 
 const pageCards = getMoreContentsCards('about')
 
-const ui = aboutUiConfig
 const route = useRoute()
 const router = useRouter()
 
-const activeTabId = computed<AboutTabId>(() => {
+const isLoading = ref(true)
+const hasError = ref(false)
+const config = ref<AboutConfig | null>(null)
+
+const bannerTitle = computed(() => config.value?.bannerTitle ?? 'About')
+
+const activeTabId = computed(() => {
+  if (!config.value) return null
   const fromQuery = typeof route.query.tab === 'string' ? route.query.tab : null
-  return getAboutTabById(fromQuery).id
+  if (fromQuery && isAboutTabId(config.value.tabs, fromQuery)) {
+    return fromQuery
+  }
+  return config.value.defaultTabId
 })
 
-const activeTab = computed(() => getAboutTabById(activeTabId.value))
+const activeTab = computed(() => {
+  if (!config.value || activeTabId.value === null) return undefined
+  return getAboutTabById(config.value.tabs, activeTabId.value, config.value.defaultTabId)
+})
 
-function selectTab(tabId: AboutTabId): void {
+const activeTabHtml = computed(() => {
+  if (!activeTab.value) return ''
+  return renderMarkdown(activeTab.value.content)
+})
+
+function selectTab(tabId: string): void {
   if (tabId === activeTabId.value) return
   void router.replace({ query: { ...route.query, tab: tabId } })
 }
 
-watch(
-  () => route.query.tab,
-  (tab) => {
-    if (typeof tab === 'string' && !isAboutTabId(tab)) {
-      void router.replace({ query: { ...route.query, tab: ui.defaultTabId } })
+onMounted(async () => {
+  try {
+    config.value = await getAboutConfig()
+    const fromQuery = typeof route.query.tab === 'string' ? route.query.tab : null
+    if (fromQuery && !isAboutTabId(config.value.tabs, fromQuery)) {
+      void router.replace({ query: { ...route.query, tab: config.value.defaultTabId } })
     }
-  },
-  { immediate: true },
-)
+  } catch (error) {
+    console.warn('Failed to load About config.', error)
+    hasError.value = true
+  } finally {
+    isLoading.value = false
+  }
+})
 </script>
 
 <template>
   <div class="page">
     <div class="banner-container">
       <div class="banner-content">
-        <h1>{{ ui.bannerTitle }}</h1>
+        <h1>{{ bannerTitle }}</h1>
       </div>
     </div>
 
     <div class="main-page">
       <div class="content-general">
-        <div class="about-panel" role="region" :aria-label="ui.bannerTitle">
+        <div v-if="isLoading" class="about-status">Loading…</div>
+
+        <div v-else-if="hasError || !config?.enabled" class="about-status">
+          About content is unavailable right now.
+        </div>
+
+        <div v-else class="about-panel" role="region" :aria-label="bannerTitle">
           <div class="tabs" role="tablist" aria-label="About sections">
             <button
-              v-for="tab in ui.tabs"
+              v-for="tab in config.tabs"
               :key="tab.id"
               type="button"
               role="tab"
@@ -68,35 +94,13 @@ watch(
           </div>
 
           <div
+            v-if="activeTab"
             class="tab-panel"
             role="tabpanel"
             :id="`about-panel-${activeTab.id}`"
             :aria-labelledby="`about-tab-${activeTab.id}`"
-          >
-            <section
-              v-for="(section, index) in activeTab.sections"
-              :key="`${activeTab.id}-${index}`"
-              class="section"
-            >
-              <h2 v-if="section.title" class="section-title">{{ section.title }}</h2>
-
-              <p
-                v-for="(paragraph, paragraphIndex) in section.paragraphs"
-                :key="`p-${paragraphIndex}`"
-                class="section-text"
-              >
-                {{ paragraph }}
-              </p>
-
-              <ul v-if="section.bullets?.length" class="section-list">
-                <li v-for="(bullet, bulletIndex) in section.bullets" :key="`b-${bulletIndex}`">
-                  {{ bullet }}
-                </li>
-              </ul>
-
-              <p v-if="section.note" class="section-note">{{ section.note }}</p>
-            </section>
-          </div>
+            v-html="activeTabHtml"
+          ></div>
         </div>
       </div>
     </div>
@@ -149,6 +153,14 @@ watch(
   padding-bottom: 48px;
 }
 
+.about-status {
+  padding: 28px 30px;
+  background: #f2f2f2;
+  border-radius: 4px;
+  color: #555;
+  font-size: 16px;
+}
+
 .about-panel {
   background: #f2f2f2;
   border-radius: 4px;
@@ -192,18 +204,19 @@ watch(
   padding: 28px 30px 32px;
 }
 
-.section + .section {
-  margin-top: 28px;
-}
-
-.section-title {
+.tab-panel :deep(h1),
+.tab-panel :deep(h2),
+.tab-panel :deep(h3) {
   margin: 0 0 12px;
-  font-size: 20px;
   font-weight: 600;
   color: #333;
 }
 
-.section-text {
+.tab-panel :deep(h2) {
+  font-size: 20px;
+}
+
+.tab-panel :deep(p) {
   margin: 0 0 14px;
   font-size: 16px;
   line-height: 1.7;
@@ -211,24 +224,21 @@ watch(
   text-align: justify;
 }
 
-.section-list {
-  margin: 0;
+.tab-panel :deep(ul),
+.tab-panel :deep(ol) {
+  margin: 0 0 14px;
   padding: 4px 0 8px 18px;
   color: #333;
   font-size: 16px;
   line-height: 1.7;
 }
 
-.section-list li {
+.tab-panel :deep(li) {
   margin-bottom: 6px;
 }
 
-.section-note {
-  margin: 12px 0 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #707070;
-  font-style: italic;
+.tab-panel :deep(a) {
+  color: #42916e;
 }
 
 @media screen and (max-width: 750px) {

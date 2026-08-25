@@ -13,6 +13,11 @@ export interface ScreenFieldConfig {
   placeholder: string
 }
 
+export interface DetailFieldConfigItem {
+  field: string
+  label: string
+}
+
 export interface HomeDetailSearchConfig {
   sectionTitle: string
   areaOfInterestSectionTitle: string
@@ -22,9 +27,10 @@ export interface HomeDetailSearchConfig {
   longitudeLabel: string
   areaLabel: string
   featuresDownloadLabel: string
+  fields?: DetailFieldConfigItem[] | null
 }
 
-export interface ScreenConfig {
+export interface ScreenFilterConfig {
   title: string
   hierarchyKeys: HierarchyLevelKey[]
   identifier?: ScreenFieldConfig | null
@@ -32,12 +38,15 @@ export interface ScreenConfig {
   level1SectionTitle?: string | null
   level2SectionTitle?: string | null
   filterByTitle?: string | null
+}
+
+export interface HomeScreenConfig extends ScreenFilterConfig {
   detail?: HomeDetailSearchConfig | null
 }
 
 export interface ScreensConfig {
-  home: ScreenConfig
-  downloads: ScreenConfig
+  home: HomeScreenConfig
+  downloads: ScreenFilterConfig
 }
 
 export interface KpiCardConfig {

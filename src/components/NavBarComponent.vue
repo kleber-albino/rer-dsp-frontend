@@ -1,15 +1,28 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import govbrLogo from '@/assets/images/govbr.svg'
+import { getAboutConfig } from '@/services/aboutService'
 
 const route = useRoute()
 
-const links = [
-  { to: '/', label: 'Home', name: 'home' },
-  { to: '/geoservices', label: 'Downloads', name: 'geoservices' },
-  { to: '/about', label: 'About', name: 'about' },
-]
+const isAboutEnabled = ref(false)
+
+onMounted(async () => {
+  const config = await getAboutConfig()
+  isAboutEnabled.value = config.enabled
+})
+
+const links = computed(() => {
+  const baseLinks = [
+    { to: '/', label: 'Home', name: 'home' },
+    { to: '/geoservices', label: 'Downloads', name: 'geoservices' },
+  ]
+  if (isAboutEnabled.value) {
+    baseLinks.push({ to: '/about', label: 'About', name: 'about' })
+  }
+  return baseLinks
+})
 
 const isActive = computed(() => (name: string) => route.name === name)
 </script>

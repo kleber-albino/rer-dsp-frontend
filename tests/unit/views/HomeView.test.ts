@@ -40,6 +40,14 @@ vi.mock('@/utils/scrollToElement', () => ({
   scrollToElement,
 }))
 
+const { prepareAoiHighlightGeometryMock } = vi.hoisted(() => ({
+  prepareAoiHighlightGeometryMock: vi.fn((geojson: GeoJSON.GeoJsonObject) => geojson),
+}))
+
+vi.mock('@/utils/prepareAoiHighlightGeometry', () => ({
+  prepareAoiHighlightGeometry: prepareAoiHighlightGeometryMock,
+}))
+
 vi.mock('@/services/geoserverAoiService', async () => {
   const actual = await vi.importActual<typeof import('@/services/geoserverAoiService')>(
     '@/services/geoserverAoiService',
@@ -139,6 +147,28 @@ vi.mock('@/components/DspMapComponent.vue', () => ({
   },
 }))
 
+const sampleHighlightGeoJson: GeoJSON.FeatureCollection = {
+  type: 'FeatureCollection',
+  features: [
+    {
+      type: 'Feature',
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          [
+            [-47.9, -15.8],
+            [-47.8, -15.8],
+            [-47.8, -15.7],
+            [-47.9, -15.7],
+            [-47.9, -15.8],
+          ],
+        ],
+      },
+      properties: {},
+    },
+  ],
+}
+
 const initialBbox = {
   minX: -74.0,
   minY: -34.0,
@@ -187,27 +217,8 @@ describe('HomeView', () => {
     ])
     vi.mocked(getDetailsByIdentifier).mockResolvedValue(null)
     vi.mocked(getDetailsByCoordinates).mockResolvedValue(null)
-    vi.mocked(fetchAoiGeometryById).mockResolvedValue({
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          geometry: {
-            type: 'Polygon',
-            coordinates: [
-              [
-                [-47.9, -15.8],
-                [-47.8, -15.8],
-                [-47.8, -15.7],
-                [-47.9, -15.7],
-                [-47.9, -15.8],
-              ],
-            ],
-          },
-          properties: {},
-        },
-      ],
-    })
+    vi.mocked(fetchAoiGeometryById).mockResolvedValue(sampleHighlightGeoJson)
+    prepareAoiHighlightGeometryMock.mockImplementation((geojson) => geojson)
     vi.mocked(getTerritoryBoundaryBox).mockImplementation(async (options = {}) => {
       if (
         !(options.level1Ids?.length || options.level2Ids?.length || options.level3Ids?.length)
@@ -250,7 +261,11 @@ describe('HomeView', () => {
       'DF123456789012',
       'http://localhost:22668/geoserver/dsp/wfs',
     )
-    expect(showSelectedAoiGeometry).toHaveBeenCalled()
+    expect(prepareAoiHighlightGeometryMock).toHaveBeenCalledWith(sampleHighlightGeoJson)
+    expect(showSelectedAoiGeometry).toHaveBeenCalledWith(
+      sampleHighlightGeoJson,
+      expect.any(Object),
+    )
     expect(scrollToElement).toHaveBeenCalledWith('.dsp-map')
     expect(searchFilter.vm.form.level2).toEqual(['DF'])
     expect(searchFilter.vm.form.level3).toEqual(['5300108'])
@@ -334,6 +349,7 @@ describe('HomeView', () => {
       'DF-123',
       'http://localhost:22668/geoserver/dsp/wfs',
     )
+    expect(prepareAoiHighlightGeometryMock).toHaveBeenCalledWith(sampleHighlightGeoJson)
     expect(showSelectedAoiGeometry).toHaveBeenCalled()
     expect(showDetailButton).toHaveBeenCalled()
     expect(wrapper.text()).not.toContain('Search details')
@@ -358,6 +374,7 @@ describe('HomeView', () => {
       'DF-456',
       'http://localhost:22668/geoserver/dsp/wfs',
     )
+    expect(showSelectedAoiGeometry).toHaveBeenCalled()
     expect(wrapper.text()).toContain('DF-456')
   })
 

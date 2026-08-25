@@ -31,4 +31,6 @@ export interface DetailByIdentifierDTO {
   alterationDate?: string
   area?: number
   otherIds?: string[]
+  /** Values for screens.home.detail.fields, keyed by field name. */
+  attributes?: Record<string, unknown> | null
 }

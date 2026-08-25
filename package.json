@@ -18,11 +18,15 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@govbr-ds/core": "^3.6.1",
     "@rural-environmental-registry/map_component": "^1.2.0",
+    "@turf/simplify": "^7.2.0",
+    "dompurify": "^3.4.14",
+    "marked": "^18.0.10",
     "vue": "3.5.13",
     "vue-router": "4.5.0"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^22.13.4",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitest/coverage-v8": "3.1.1",

@@ -44,6 +44,10 @@ export const moreContentsUiConfig = {
   } satisfies Record<MoreContentsPage, MoreContentsCardItem[]>,
 }
 
-export function getMoreContentsCards(page: MoreContentsPage): MoreContentsCardItem[] {
-  return moreContentsUiConfig.cardsByPage[page]
+export function getMoreContentsCards(
+  page: MoreContentsPage,
+  isAboutEnabled = true,
+): MoreContentsCardItem[] {
+  const cards = moreContentsUiConfig.cardsByPage[page]
+  return isAboutEnabled ? cards : cards.filter((card) => card !== cardAbout)
 }

@@ -32,9 +32,10 @@ describe('format', () => {
   })
 
   describe('formatPropertyMeasures', () => {
-    it('should format with two decimal places', () => {
+    it('should format with dot decimals and no thousands separator', () => {
       expect(formatPropertyMeasures(120.5)).toBe('120.50')
       expect(formatPropertyMeasures('2,5')).toBe('2.50')
+      expect(formatPropertyMeasures(53944.7195802754)).toBe('53944.72')
     })
 
     it('should return dash for invalid values', () => {

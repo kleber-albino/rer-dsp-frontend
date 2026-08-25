@@ -15,6 +15,7 @@ import {
   type HierarchyLevelKey,
   type SearchFormConfig,
 } from '@/config/searchHierarchy'
+import { prepareAoiHighlightGeometry } from '@/utils/prepareAoiHighlightGeometry'
 import {
   mockTotalizerValues,
   resolveHomeKpis,
@@ -53,12 +54,17 @@ import type { TerritoryBoundaryBox } from '@/types/territory'
 import DspMapComponent from '@/components/DspMapComponent.vue'
 import MoreContents from '@/components/MoreContents.vue'
 import { getMoreContentsCards } from '@/config/moreContentsUi'
+import { getAboutConfig } from '@/services/aboutService'
 import {
   downloadFeaturesBundle,
   triggerBrowserDownload,
 } from '@/services/downloadService'
 
-const pageCards = getMoreContentsCards('home')
+const pageCards = ref(getMoreContentsCards('home', false))
+onMounted(async () => {
+  const aboutConfig = await getAboutConfig()
+  pageCards.value = getMoreContentsCards('home', aboutConfig.enabled)
+})
 const logoRerSrc = `${import.meta.env.BASE_URL}images/Logo-RER.png`
 const AOI_HIGHLIGHT_DARKEN_BORDER = 0.75
 const AOI_HIGHLIGHT_DARKEN_FILL = 0.6
@@ -211,7 +217,10 @@ async function highlightAoiOnMap(
     return
   }
 
-  mapRef.value?.showSelectedAoiGeometry(geojson, resolveHighlightStyle())
+  mapRef.value?.showSelectedAoiGeometry(
+    prepareAoiHighlightGeometry(geojson),
+    resolveHighlightStyle(),
+  )
 
   const coords = resolveButtonCoords(detail, fallbackCoords)
   if (coords) {

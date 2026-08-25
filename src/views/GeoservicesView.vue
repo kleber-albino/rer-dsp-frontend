@@ -16,8 +16,13 @@ import type { DownloadItemDTO } from '@/types/download'
 import MoreContents from '@/components/MoreContents.vue'
 import LoadingDotsComponent from '@/components/LoadingDotsComponent.vue'
 import { getMoreContentsCards } from '@/config/moreContentsUi'
+import { getAboutConfig } from '@/services/aboutService'
 
-const pageCards = getMoreContentsCards('geoservices')
+const pageCards = ref(getMoreContentsCards('geoservices', false))
+onMounted(async () => {
+  const aboutConfig = await getAboutConfig()
+  pageCards.value = getMoreContentsCards('geoservices', aboutConfig.enabled)
+})
 
 const ui = downloadsUiConfig
 const themeOptions = ref<SelectOption[]>([])

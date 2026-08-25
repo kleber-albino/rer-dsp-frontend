@@ -1,8 +1,23 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import AboutView from '@/views/AboutView.vue'
-import { aboutUiConfig } from '@/config/aboutUi'
+import { getAboutConfig } from '@/services/aboutService'
+import type { AboutConfig } from '@/types/aboutConfig'
+
+vi.mock('@/services/aboutService', () => ({
+  getAboutConfig: vi.fn(),
+}))
+
+const CONFIG: AboutConfig = {
+  enabled: true,
+  bannerTitle: 'About',
+  defaultTabId: 'overview',
+  tabs: [
+    { id: 'overview', label: 'Overview', content: '# Overview\n\nDigital Public Good.' },
+    { id: 'license', label: 'License', content: '## License\n\nGPL-3.0, see LICENSE.' },
+  ],
+}
 
 async function mountAbout(query: Record<string, string> = {}) {
   const router = createRouter({
@@ -26,19 +41,48 @@ async function mountAbout(query: Record<string, string> = {}) {
 }
 
 describe('AboutView', () => {
-  it('should render banner and overview tab by default', async () => {
-    const { wrapper } = await mountAbout()
-
-    expect(wrapper.text()).toContain(aboutUiConfig.bannerTitle)
-    expect(wrapper.text()).toContain('Overview')
-    expect(wrapper.text()).toContain('How to use')
-    expect(wrapper.text()).toContain('Configuration')
-    expect(wrapper.text()).toContain('License')
-    expect(wrapper.text()).not.toContain('Roadmap')
-    expect(wrapper.text()).toContain('Digital Public Good')
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('should switch tab content and update query', async () => {
+  it('should show a loading state before the config resolves', async () => {
+    let resolveConfig: (value: AboutConfig) => void = () => {}
+    vi.mocked(getAboutConfig).mockReturnValue(
+      new Promise((resolve) => {
+        resolveConfig = resolve
+      }),
+    )
+
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [{ path: '/about', name: 'about', component: AboutView }],
+    })
+    await router.push('/about')
+    await router.isReady()
+    const wrapper = mount(AboutView, { global: { plugins: [router] } })
+
+    expect(wrapper.text()).toContain('Loading')
+
+    resolveConfig(CONFIG)
+    await flushPromises()
+    expect(wrapper.text()).not.toContain('Loading')
+  })
+
+  it('should render banner and dynamic tabs on success', async () => {
+    vi.mocked(getAboutConfig).mockResolvedValue(CONFIG)
+
+    const { wrapper } = await mountAbout()
+
+    expect(wrapper.text()).toContain('About')
+    expect(wrapper.text()).toContain('Overview')
+    expect(wrapper.text()).toContain('License')
+    expect(wrapper.text()).toContain('Digital Public Good.')
+    expect(wrapper.find('.tab-panel h1').text()).toBe('Overview')
+  })
+
+  it('should switch tab content and update query, rendering markdown as HTML', async () => {
+    vi.mocked(getAboutConfig).mockResolvedValue(CONFIG)
+
     const { wrapper, router } = await mountAbout()
 
     const licenseTab = wrapper
@@ -48,15 +92,43 @@ describe('AboutView', () => {
     await flushPromises()
 
     expect(router.currentRoute.value.query.tab).toBe('license')
+    expect(wrapper.find('h2').text()).toBe('License')
     expect(wrapper.text()).toContain('GPL-3.0')
-    expect(wrapper.text()).toContain('LICENSE')
   })
 
-  it('should open how-to-use from query string', async () => {
-    const { wrapper } = await mountAbout({ tab: 'how-to-use' })
+  it('should open a tab from the query string', async () => {
+    vi.mocked(getAboutConfig).mockResolvedValue(CONFIG)
 
-    expect(wrapper.text()).toContain('Home')
-    expect(wrapper.text()).toContain('Downloads')
-    expect(wrapper.text()).toContain('Level 2')
+    const { wrapper } = await mountAbout({ tab: 'license' })
+
+    expect(wrapper.text()).toContain('GPL-3.0')
+  })
+
+  it('should fall back to the default tab when the query is invalid', async () => {
+    vi.mocked(getAboutConfig).mockResolvedValue(CONFIG)
+
+    const { wrapper, router } = await mountAbout({ tab: 'not-a-real-tab' })
+
+    expect(router.currentRoute.value.query.tab).toBe('overview')
+    expect(wrapper.text()).toContain('Digital Public Good.')
+  })
+
+  it('should show a graceful empty state on network error', async () => {
+    vi.mocked(getAboutConfig).mockRejectedValue(new Error('offline'))
+
+    const { wrapper } = await mountAbout()
+
+    expect(wrapper.text()).toContain('About')
+    expect(wrapper.text()).toContain('unavailable')
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false)
+  })
+
+  it('should show a graceful empty state when the feature is disabled', async () => {
+    vi.mocked(getAboutConfig).mockResolvedValue({ ...CONFIG, enabled: false })
+
+    const { wrapper } = await mountAbout()
+
+    expect(wrapper.text()).toContain('unavailable')
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false)
   })
 })
