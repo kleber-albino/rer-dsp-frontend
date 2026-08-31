@@ -4,7 +4,6 @@ import type { AboutConfig } from '@/types/aboutConfig'
 const FALLBACK_ABOUT_CONFIG: AboutConfig = {
   enabled: false,
   bannerTitle: 'About',
-  defaultTabId: '',
   tabs: [],
 }
 

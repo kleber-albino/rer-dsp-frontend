@@ -12,6 +12,11 @@ declare module '*.png' {
   export default src
 }
 
+declare module '*.html?raw' {
+  const src: string
+  export default src
+}
+
 interface ImportMetaEnv {
   readonly VITE_BASE_URL: string
   readonly VITE_DSP_API_URL: string

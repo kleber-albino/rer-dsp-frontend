@@ -7,6 +7,5 @@ export interface AboutTabConfig {
 export interface AboutConfig {
   enabled: boolean
   bannerTitle: string
-  defaultTabId: string
   tabs: AboutTabConfig[]
 }

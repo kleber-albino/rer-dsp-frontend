@@ -10,7 +10,6 @@ vi.mock('@/services/httpClient', () => ({
 const CONFIG: AboutConfig = {
   enabled: true,
   bannerTitle: 'About',
-  defaultTabId: 'overview',
   tabs: [{ id: 'overview', label: 'Overview', content: '# Overview' }],
 }
 

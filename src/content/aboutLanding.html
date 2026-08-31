@@ -1,0 +1,280 @@
+<header class="banner" id="about">
+    <div class="banner-inner"><h1>About DSP</h1></div>
+  </header><main>
+    <section class="section">
+      <div class="container hero-grid">
+        <div class="hero-intro">
+          <h2>A platform to make geospatial data more accessible</h2>
+          <p>The <strong>DSP — Data Sharing Platform</strong> is a generic platform for public consultation of geospatial data. Inspired by the experience of the <a href="https://consulta.car.gov.br/" target="_blank" rel="noopener">Rural Environmental Registry Public Consultation (CAR)</a>, it was designed so that different organizations can publish, explore, and share their own data through a reusable and configurable solution.</p>
+          <p><em>Digital Public Good · Open Source · Reusable</em></p>
+        </div>
+        <aside class="card hero-card">
+          <h3>The DSP in brief</h3>
+          <ul>
+            <li>Public consultation of geospatial data.</li>
+            <li>Configurable instances without code changes.</li>
+            <li>Hierarchical territorial filters.</li>
+            <li>Configurable map, layers, KPIs, and downloads.</li>
+            <li>GeoServer integration.</li>
+            <li>Collaborative evolution.</li>
+          </ul>
+          <a class="btn btn--primary" href="https://github.com/Rural-Environmental-Registry/rer-dsp-core" target="_blank" rel="noopener">Meet the community on GitHub</a>
+        </aside>
+      </div>
+    </section>
+    <section class="section section--alt">
+      <div class="container">
+        <div class="heading">
+          <div class="kicker">Discover the platform</div>
+          <h2>What is the DSP?</h2>
+          <p>The Data Sharing Platform is a generic product designed to turn the public consultation experience for geographic data into a reusable tool for different institutions.</p>
+        </div>
+        <div class="intro">
+          <article class="card content">
+            <h3>From a domain-specific experience to a reusable platform</h3>
+            <p>The <a href="https://consulta.car.gov.br/" target="_blank" rel="noopener">CAR Public Consultation</a> shows how an interface can combine filters, indicators, cartographic visualization, layers, and data publishing. The DSP generalizes that capability so the solution is not limited to a single database or domain.</p>
+            <p>Instead of relying on territorial values, indicators, or layers fixed in code, a DSP instance can define its own structure by running <code>./config.sh</code>, which guides configuration and generates <code>config/adopter/adopter-config.yaml</code>.</p>
+            <p>For example, one instance can use <strong>Country → Region → District</strong>, while another can use <strong>State → Municipality → Area</strong>, without changing application logic.</p>
+          </article>
+          <aside class="config-highlight">
+            <h3>Configurable by design</h3>
+            <span class="config-script">config.sh</span>
+            <p>Instance configuration defines the territorial structure, filters, indicators, and data presented by the platform.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="heading">
+          <div class="kicker">Product principles</div>
+          <h2>Why use the DSP?</h2>
+          <p>The platform was designed to reduce the need to build a new application for every geospatial data publishing initiative.</p>
+        </div>
+        <div class="grid3">
+          <article class="card principle">
+            <div class="icon" aria-hidden="true">♻</div>
+            <h3>Reusable</h3>
+            <p>The same technology base can serve different organizations, territories, and datasets.</p>
+          </article>
+          <article class="card principle">
+            <div class="icon" aria-hidden="true">⚙</div>
+            <h3>Configurable</h3>
+            <p>Territorial structure, filters, KPIs, and layers are driven by configuration, including integration with the <a href="https://www.digitalpublicgoods.net/r/rural-environmental-registry-registration-module" target="_blank" rel="noopener">RER</a> as a Digital Public Good.</p>
+          </article>
+          <article class="card principle">
+            <div class="icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="">
+                <circle cx="10.5" cy="10.5" r="6.5" stroke="#000" stroke-width="2.2"/>
+                <path d="M15.5 15.5L21 21" stroke="#000" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3>Transparent and auditable</h3>
+            <p>As a digital public good, its evolution can be followed and improved by the community.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section section--alt" id="features">
+      <div class="container">
+        <div class="heading">
+          <div class="kicker">Available features</div>
+          <h2>What can you do with the DSP?</h2>
+          <p>Features for consultation, geospatial exploration, and access to available data.</p>
+        </div>
+        <div class="features">
+          <article class="card feature">
+            <div class="ficon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 7h16M4 12h10M4 17h14" stroke="#000" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="feature-body">
+              <h3>Hierarchical territorial filters</h3>
+              <p>Support for configurable filters at hierarchical levels and lookup by registration unit or feature identifier.</p>
+            </div>
+          </article>
+          <article class="card feature">
+            <div class="ficon" aria-hidden="true">
+              <img src="__BASE__images/about-landing/icon-bars.png" alt="">
+            </div>
+            <div class="feature-body">
+              <h3>Dynamic indicators and KPIs</h3>
+              <p>A dashboard with 1 to 5 indicators configured according to the instance fields, labels, and units of measurement.</p>
+            </div>
+          </article>
+          <article class="card feature">
+            <div class="ficon" aria-hidden="true">
+              <img src="__BASE__images/about-landing/icon-map.png" alt="">
+            </div>
+            <div class="feature-body">
+              <h3>Map and thematic layers</h3>
+              <p>Configurable layers and territorial divisions, organized into themes and sublayers with visibility control.</p>
+            </div>
+          </article>
+          <article class="card feature">
+            <div class="ficon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s6-4.35 6-10a6 6 0 1 0-12 0c0 5.65 6 10 6 10z" stroke="#000" stroke-width="2"/><circle cx="12" cy="11" r="2.2" stroke="#000" stroke-width="2"/></svg>
+            </div>
+            <div class="feature-body">
+              <h3>Details of the queried unit</h3>
+              <p>Display of identifier, location, area, and registration and update dates after map selection.</p>
+            </div>
+          </article>
+          <article class="card feature">
+            <div class="ficon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4v10" stroke="#000" stroke-width="2" stroke-linecap="round"/><path d="M8 10l4 4 4-4" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 20h14" stroke="#000" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <div class="feature-body">
+              <h3>Data downloads</h3>
+              <p>Lookup by territory and theme to list available services and formats.</p>
+            </div>
+          </article>
+          <article class="card feature">
+            <div class="ficon" aria-hidden="true">
+              <img src="__BASE__images/about-landing/icon-reload.png" alt="">
+            </div>
+            <div class="feature-body">
+              <h3>Data-driven updates</h3>
+              <p>Information is refreshed when underlying data changes, with the retrieval date shown. Integration with the <a href="https://www.digitalpublicgoods.net/r/rural-environmental-registry-registration-module" target="_blank" rel="noopener">RER</a>, a Digital Public Good, enables environmental property registration and timely updates in the DSP.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container config">
+        <div>
+          <div class="heading">
+            <div class="kicker">Platform adaptation</div>
+            <h2>One solution, multiple instances</h2>
+            <p>A new organization can adapt the platform to its own data without rewriting the application for each scenario.</p>
+          </div>
+          <ul class="checks">
+            <li>Define the territorial structure of your instance.</li>
+            <li>Configure the filters shown to users.</li>
+            <li>Define KPIs, labels, and units of measurement.</li>
+            <li>Organize geographic themes and sublayers.</li>
+            <li>Publish your data through the configured infrastructure.</li>
+          </ul>
+        </div>
+        <div class="config-yaml"><span class="cmt"># Illustrative excerpt from config/adopter/adopter-config.yaml</span>
+
+<span class="key">installation</span><span class="punc">:</span>
+  <span class="key">hierarchy</span><span class="punc">:</span>
+    <span class="key">level1</span><span class="punc">:</span>
+      <span class="key">label</span><span class="punc">:</span> <span class="val">"State"</span>
+      <span class="key">placeholder</span><span class="punc">:</span> <span class="val">"Select a state"</span>
+    <span class="key">level2</span><span class="punc">:</span>
+      <span class="key">label</span><span class="punc">:</span> <span class="val">"Municipality"</span>
+      <span class="key">placeholder</span><span class="punc">:</span> <span class="val">"Select a municipality"</span>
+    <span class="key">level3</span><span class="punc">:</span>
+      <span class="key">label</span><span class="punc">:</span> <span class="val">"Area"</span>
+      <span class="key">placeholder</span><span class="punc">:</span> <span class="val">"Select an area"</span>
+  <span class="key">kpis</span><span class="punc">:</span>
+    <span class="key">area_of_interest</span><span class="punc">:</span>
+      <span class="key">label</span><span class="punc">:</span> <span class="val">"Registered properties"</span>
+      <span class="key">unit_of_measurement</span><span class="punc">:</span> <span class="val">"units"</span>
+      <span class="key">optional_label</span><span class="punc">:</span> <span class="val">"ha"</span>
+    <span class="key">theme_1</span><span class="punc">:</span>
+      <span class="key">enabled</span><span class="punc">:</span> <span class="bool">true</span>
+      <span class="key">label</span><span class="punc">:</span> <span class="val">"APP"</span>
+      <span class="key">unit_of_measurement</span><span class="punc">:</span> <span class="val">"ha"</span></div>
+      </div>
+    </section>
+    <section class="section section--alt">
+      <div class="container">
+        <div class="heading">
+          <div class="kicker">Adoption</div>
+          <h2>How to instantiate the DSP?</h2>
+          <p>A process of data preparation, instance configuration, and deployment of the infrastructure required for public consultation.</p>
+        </div>
+        <div class="steps">
+          <article class="card step"><div class="num">1</div><h3>Get the code</h3><p>Access the <a href="https://github.com/Rural-Environmental-Registry/rer-dsp-core" target="_blank" rel="noopener">official repository</a> and use the available DSP version as your starting point.</p></article>
+          <article class="card step"><div class="num">2</div><h3>Prepare the data</h3><p>Organize territorial data, registration units, attributes, and geographic themes for your instance.</p></article>
+          <article class="card step"><div class="num">3</div><h3>Configure the instance</h3><p>Run <strong>./config.sh</strong> and follow the guided wizard to define filters, territorial levels, KPIs, and layers.</p></article>
+          <article class="card step"><div class="num">4</div><h3>Publish and evolve</h3><p>Deploy your instance, connect the required services, and share improvements with the community.</p></article>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="heading">
+          <div class="kicker">Use cases</div>
+          <h2>Who can use the DSP?</h2>
+          <p>As a generic and configurable platform, it can serve different contexts for publishing geographic data.</p>
+        </div>
+        <div class="uses">
+          <article class="card use">
+            <div class="uicon" aria-hidden="true"><img src="__BASE__images/about-landing/icon-building.png" alt=""></div>
+            <h3>Public agencies</h3>
+            <p>Active transparency and publication of territorial information.</p>
+          </article>
+          <article class="card use">
+            <div class="uicon" aria-hidden="true"><img src="__BASE__images/about-landing/icon-leaf.png" alt=""></div>
+            <h3>Environment</h3>
+            <p>Consultation of areas, records, themes, and monitoring data.</p>
+          </article>
+          <article class="card use">
+            <div class="uicon" aria-hidden="true"><img src="__BASE__images/about-landing/icon-map-use.png" alt=""></div>
+            <h3>Territorial management</h3>
+            <p>Exploration of data across different territorial levels.</p>
+          </article>
+          <article class="card use">
+            <div class="uicon" aria-hidden="true"><img src="__BASE__images/about-landing/icon-microscope.png" alt=""></div>
+            <h3>Research and analysis</h3>
+            <p>Access to data and layers to support studies and new services.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section section--alt">
+      <div class="container">
+        <div class="dpg">
+          <div>
+            <h2>A product designed to be shared</h2>
+            <p>The DSP was conceived as a Digital Public Good: a reusable, adaptable, and evolving solution for different contexts, so each institution does not need to start from scratch.</p>
+          </div>
+          <a class="btn btn--primary" href="https://github.com/Rural-Environmental-Registry/rer-dsp-core" target="_blank" rel="noopener">View community code</a>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="community">
+          <div>
+            <h2>Help build the DSP</h2>
+            <p>A Digital Public Good grows stronger with those who use, implement, research, and develop it. Contribute by reporting issues, proposing features, sharing deployment experiences, and submitting improvements.</p>
+          </div>
+          <div class="actions">
+            <a class="btn btn--primary" href="https://github.com/Rural-Environmental-Registry/rer-dsp-core" target="_blank" rel="noopener">Access GitHub</a>
+            <a class="btn btn--outline" href="https://github.com/Rural-Environmental-Registry/rer-dsp-core/issues" target="_blank" rel="noopener">Propose an improvement</a>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section section--alt">
+      <div class="container">
+        <div class="heading">
+          <div class="kicker">Frequently asked questions</div>
+          <h2>Understand how the DSP adapts to your context</h2>
+        </div>
+        <div class="faq-panel">
+          <details>
+            <summary>Is the DSP only for environmental data?</summary>
+            <p>No. The DSP is the continuation of the <a href="https://www.digitalpublicgoods.net/r/rural-environmental-registry-registration-module" target="_blank" rel="noopener">RER</a> as a generic platform for geospatial data consultation and sharing. The <a href="https://consulta.car.gov.br/" target="_blank" rel="noopener">CAR Public Consultation</a> experience served as a reference, but the solution was designed to be reusable.</p>
+          </details>
+          <details>
+            <summary>Do I need to change the code to use a different territorial division?</summary>
+            <p>No. Run <code>./config.sh</code> to define filters and territorial structure through the guided wizard; the assistant writes these options to <code>config/adopter/adopter-config.yaml</code>.</p>
+          </details>
+          <details>
+            <summary>Can I define my own indicators?</summary>
+            <p>Yes. Run <code>./config.sh</code> to configure KPIs through the guided wizard; calculated fields, labels, and units are saved in the instance configuration, with support for one to five indicators.</p>
+          </details>
+          <details>
+            <summary>How can I contribute?</summary>
+            <p>Contributions are made through the <a href="https://github.com/Rural-Environmental-Registry/rer-dsp-core" target="_blank" rel="noopener">official GitHub repository</a>. Report issues, propose features, and submit improvements via pull request.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>

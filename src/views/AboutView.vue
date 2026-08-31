@@ -25,12 +25,12 @@ const activeTabId = computed(() => {
   if (fromQuery && isAboutTabId(config.value.tabs, fromQuery)) {
     return fromQuery
   }
-  return config.value.defaultTabId
+  return config.value.tabs[0]?.id ?? null
 })
 
 const activeTab = computed(() => {
   if (!config.value || activeTabId.value === null) return undefined
-  return getAboutTabById(config.value.tabs, activeTabId.value, config.value.defaultTabId)
+  return getAboutTabById(config.value.tabs, activeTabId.value)
 })
 
 const activeTabHtml = computed(() => {
@@ -47,8 +47,9 @@ onMounted(async () => {
   try {
     config.value = await getAboutConfig()
     const fromQuery = typeof route.query.tab === 'string' ? route.query.tab : null
-    if (fromQuery && !isAboutTabId(config.value.tabs, fromQuery)) {
-      void router.replace({ query: { ...route.query, tab: config.value.defaultTabId } })
+    const firstTabId = config.value.tabs[0]?.id
+    if (fromQuery && !isAboutTabId(config.value.tabs, fromQuery) && firstTabId) {
+      void router.replace({ query: { ...route.query, tab: firstTabId } })
     }
   } catch (error) {
     console.warn('Failed to load About config.', error)
@@ -212,8 +213,19 @@ onMounted(async () => {
   color: #333;
 }
 
+.tab-panel :deep(h1) {
+  font-size: 28px;
+  line-height: 1.25;
+}
+
 .tab-panel :deep(h2) {
   font-size: 20px;
+  line-height: 1.3;
+}
+
+.tab-panel :deep(h3) {
+  font-size: 18px;
+  line-height: 1.35;
 }
 
 .tab-panel :deep(p) {

@@ -12,7 +12,6 @@ vi.mock('@/services/aboutService', () => ({
 const CONFIG: AboutConfig = {
   enabled: true,
   bannerTitle: 'About',
-  defaultTabId: 'overview',
   tabs: [
     { id: 'overview', label: 'Overview', content: '# Overview\n\nDigital Public Good.' },
     { id: 'license', label: 'License', content: '## License\n\nGPL-3.0, see LICENSE.' },
@@ -104,7 +103,7 @@ describe('AboutView', () => {
     expect(wrapper.text()).toContain('GPL-3.0')
   })
 
-  it('should fall back to the default tab when the query is invalid', async () => {
+  it('should fall back to the first tab when the query is invalid', async () => {
     vi.mocked(getAboutConfig).mockResolvedValue(CONFIG)
 
     const { wrapper, router } = await mountAbout({ tab: 'not-a-real-tab' })

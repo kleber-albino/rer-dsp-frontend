@@ -15,15 +15,11 @@ describe('aboutUi helpers', () => {
   })
 
   it('should resolve a tab by id', () => {
-    expect(getAboutTabById(tabs, 'license', 'overview')?.id).toBe('license')
+    expect(getAboutTabById(tabs, 'license')?.id).toBe('license')
   })
 
-  it('should fall back to the default tab id for unknown ids', () => {
-    expect(getAboutTabById(tabs, 'invalid', 'overview')?.id).toBe('overview')
-    expect(getAboutTabById(tabs, null, 'overview')?.id).toBe('overview')
-  })
-
-  it('should fall back to the first tab when the default id is also unknown', () => {
-    expect(getAboutTabById(tabs, 'invalid', 'also-invalid')?.id).toBe('overview')
+  it('should fall back to the first tab for unknown ids', () => {
+    expect(getAboutTabById(tabs, 'invalid')?.id).toBe('overview')
+    expect(getAboutTabById(tabs, null)?.id).toBe('overview')
   })
 })
