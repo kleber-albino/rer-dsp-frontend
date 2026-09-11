@@ -38,11 +38,13 @@ const props = withDefaults(
     config?: SearchFormConfig
     hierarchyFields?: Record<HierarchyLevelKey, HierarchyFieldConfig>
     themeOptions?: SelectOption[]
+    sessionActive?: boolean
   }>(),
   {
     config: () => homeSearchConfig,
     hierarchyFields: () => hierarchyFieldsByKey,
     themeOptions: () => [],
+    sessionActive: false,
   },
 )
 
@@ -271,6 +273,8 @@ const canSearch = computed(() => {
   return hasHierarchy || hasIdentifier
 })
 
+const showClearButton = computed(() => canSearch.value || props.sessionActive)
+
 const handleSearch = () =>
   emit('search', {
     ...form,
@@ -289,6 +293,22 @@ const handleClear = () => {
     level2Options.value = []
   }
   emit('clear')
+}
+
+function applyIdentifierSelection(identifier: string): void {
+  if (!props.config.identifier) {
+    return
+  }
+
+  form.identifier = identifier.trim()
+}
+
+function clearIdentifierSelection(): void {
+  if (!props.config.identifier) {
+    return
+  }
+
+  form.identifier = ''
 }
 
 async function applyTerritorySelection(selection: TerritorySelection): Promise<void> {
@@ -324,6 +344,8 @@ async function applyTerritorySelection(selection: TerritorySelection): Promise<v
 }
 
 defineExpose({
+  applyIdentifierSelection,
+  clearIdentifierSelection,
   applyTerritorySelection,
   form,
 })
@@ -397,7 +419,7 @@ defineExpose({
             Search
           </button>
           <button
-            v-if="canSearch"
+            v-if="showClearButton"
             type="button"
             class="br-button inverted"
             @click="handleClear"
