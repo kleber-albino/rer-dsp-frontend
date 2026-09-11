@@ -17,7 +17,7 @@ export type FallbackDetailFieldKey =
   | 'longitude'
   | 'area'
 
-/** Fallback union plus exclusive config keys (`registration_date`, `calculated.latitude`, extras). */
+/** Fallback union plus exclusive config keys (`created_at`, `calculated.latitude`, extras). */
 export type DetailFieldKey = FallbackDetailFieldKey | string
 
 export interface DetailFieldConfig {
@@ -53,7 +53,7 @@ const DEFAULT_DETAIL_LABELS: HomeDetailSearchConfig = {
   featuresDownloadLabel: 'Download features',
 }
 
-const DATE_ATTRIBUTE_FIELDS = new Set(['registration_date', 'updated_at'])
+const DATE_ATTRIBUTE_FIELDS = new Set(['created_at', 'updated_at'])
 
 /** Attribute keys rendered with two decimal places via formatPropertyMeasures. */
 const MEASURE_ATTRIBUTE_FIELDS = new Set(['area', 'perimeter_m'])

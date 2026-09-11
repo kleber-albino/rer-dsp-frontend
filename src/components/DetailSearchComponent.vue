@@ -254,8 +254,18 @@ function onDownloadFeatures(): void {
 
 .actions {
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
   gap: 16px;
+}
+
+.details-card .actions .br-button {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: max-content;
+  align-self: flex-start;
 }
 
 .actions .br-button:disabled {
@@ -276,10 +286,6 @@ function onDownloadFeatures(): void {
 
   .property-row .field {
     min-width: 0;
-  }
-
-  .actions .br-button {
-    width: 100%;
   }
 }
 </style>

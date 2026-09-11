@@ -201,7 +201,7 @@ describe('detailByIdentifier config', () => {
             fields: [
               { field: 'area', label: 'Area' },
               { field: 'calculated.latitude', label: 'Centroid latitude' },
-              { field: 'registration_date', label: 'Registration date' },
+              { field: 'created_at', label: 'Registration date' },
               { field: 'updated_at', label: 'Alteration date' },
             ],
           },
@@ -211,7 +211,7 @@ describe('detailByIdentifier config', () => {
 
     const area = config.fields.find((field) => field.key === 'area')
     const latitude = config.fields.find((field) => field.key === 'calculated.latitude')
-    const registration = config.fields.find((field) => field.key === 'registration_date')
+    const registration = config.fields.find((field) => field.key === 'created_at')
     const updated = config.fields.find((field) => field.key === 'updated_at')
 
     expect(area?.formatAsMeasure).toBe(true)

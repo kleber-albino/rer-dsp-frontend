@@ -16,10 +16,6 @@ import { DSP_MAP_OPTIONS } from '@/config/mapOptions'
 import { bboxToMapView } from '@/utils/bboxToMapView'
 import { FALLBACK_INSTALLATION_CONFIG } from '@/config/installationConfigFallback'
 
-const { scrollToElement } = vi.hoisted(() => ({
-  scrollToElement: vi.fn(),
-}))
-
 const { downloadFeaturesBundle, triggerBrowserDownload } = vi.hoisted(() => ({
   downloadFeaturesBundle: vi.fn(),
   triggerBrowserDownload: vi.fn(),
@@ -34,10 +30,6 @@ vi.mock('@/services/totalizerService', () => ({
   getTotalizers: vi.fn(),
   getDetailsByIdentifier: vi.fn(),
   getDetailsByCoordinates: vi.fn(),
-}))
-
-vi.mock('@/utils/scrollToElement', () => ({
-  scrollToElement,
 }))
 
 const { prepareAoiHighlightGeometryMock } = vi.hoisted(() => ({
@@ -257,6 +249,8 @@ describe('HomeView', () => {
     expect(wrapper.text()).toContain('Search details')
     expect(wrapper.text()).toContain('DF123456789012')
     expect(wrapper.text()).toContain('Download features')
+    expect(wrapper.text()).not.toContain('Registered properties')
+    expect(wrapper.find('.data-cards-section').exists()).toBe(false)
     expect(fetchAoiGeometryById).toHaveBeenCalledWith(
       'DF123456789012',
       'http://localhost:22668/geoserver/dsp/wfs',
@@ -266,7 +260,6 @@ describe('HomeView', () => {
       sampleHighlightGeoJson,
       expect.any(Object),
     )
-    expect(scrollToElement).toHaveBeenCalledWith('.dsp-map')
     expect(searchFilter.vm.form.level2).toEqual(['DF'])
     expect(searchFilter.vm.form.level3).toEqual(['5300108'])
   })
@@ -354,10 +347,13 @@ describe('HomeView', () => {
     expect(showDetailButton).toHaveBeenCalled()
     expect(wrapper.text()).not.toContain('Search details')
     expect(wrapper.text()).not.toContain('Outros próximos')
+    expect(wrapper.text()).toContain('Registered properties')
 
     await map.vm.$emit('open-details')
     await flushPromises()
 
+    expect(wrapper.find('.data-cards-section').exists()).toBe(false)
+    expect(wrapper.text()).not.toContain('Registered properties')
     expect(wrapper.text()).toContain('DF-123')
     expect(wrapper.text()).toContain('Outros próximos')
     expect(wrapper.text()).toContain('DF-456')

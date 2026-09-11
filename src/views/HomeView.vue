@@ -47,7 +47,6 @@ import {
   type ResolvedInitialMapView,
 } from '@/utils/resolveInitialMapView'
 import { darkenHex } from '@/utils/darkenColor'
-import { scrollToElement } from '@/utils/scrollToElement'
 import type { HomeKpisConfig, InstallationConfig } from '@/types/installationConfig'
 import type { DetailByIdentifierDTO } from '@/types/totalizer'
 import type { TerritoryBoundaryBox } from '@/types/territory'
@@ -332,7 +331,6 @@ const onSearch = async (payload: SearchFilterPayload) => {
         level2Label: detail.territory?.level2?.name,
         level3Label: detail.territory?.level3?.name,
       })
-      scrollToMap()
       try {
         await highlightAoiOnMap(detail)
       } catch (error) {
@@ -352,7 +350,6 @@ const onSearch = async (payload: SearchFilterPayload) => {
     await loadTotalizers(level2Ids, level3Ids)
     try {
       await zoomToTerritory(level2Ids, level3Ids)
-      scrollToMap()
     } catch (error) {
       console.error(error)
       searchError.value = 'Could not load territory boundary box.'
@@ -404,10 +401,6 @@ const onOpenDetails = () => {
   detailByIdentifier.value = pendingDetail.value
 }
 
-function scrollToMap(): void {
-  scrollToElement('.dsp-map')
-}
-
 const onSelectAoi = async (id: string) => {
   if (!id || id === pendingDetail.value?.id) {
     return
@@ -431,7 +424,6 @@ const onSelectAoi = async (id: string) => {
     if (detailByIdentifier.value) {
       detailByIdentifier.value = next
     }
-    scrollToMap()
     await highlightAoiOnMap(next)
   } catch (error) {
     console.error(error)
@@ -511,7 +503,7 @@ onMounted(async () => {
         <p v-if="searching" class="status-msg"><LoadingDotsComponent /></p>
         <p v-else-if="searchError" class="status-msg status-msg--error">{{ searchError }}</p>
 
-        <section v-else-if="kpis.length" class="data-cards-section">
+        <section v-else-if="kpis.length && !detailByIdentifier" class="data-cards-section">
           <div class="data-cards">
             <div v-for="kpi in kpis" :key="kpi.id" class="data-card-container">
               <KpiCardComponent
