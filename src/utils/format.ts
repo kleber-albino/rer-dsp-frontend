@@ -3,14 +3,13 @@ export function formatValue(value: number | string | undefined | null): string {
     return '—'
   }
 
-  const numeric = typeof value === 'number' ? value : Number(value)
+  const normalized = typeof value === 'string' ? value.replace(',', '.') : value
+  const numeric = typeof normalized === 'number' ? normalized : Number(normalized)
   if (Number.isNaN(numeric)) {
     return String(value)
   }
 
-  return new Intl.NumberFormat('en-US', {
-    maximumFractionDigits: 2,
-  }).format(numeric)
+  return numeric.toFixed(2)
 }
 
 export function formatValueInt(value: number | string | undefined | null): string {

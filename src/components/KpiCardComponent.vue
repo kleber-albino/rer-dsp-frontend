@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatValue, formatValueInt } from '@/utils/format'
+import { formatValue } from '@/utils/format'
 
 defineProps<{
   title: string
@@ -28,7 +28,7 @@ defineProps<{
         v-if="optionalLabel !== undefined && optionalValue !== undefined"
         class="text-sm text-gray-500"
       >
-        {{ formatValueInt(optionalValue) }} {{ optionalLabel }}
+        {{ formatValue(optionalValue) }} {{ optionalLabel }}
       </span>
     </div>
   </div>

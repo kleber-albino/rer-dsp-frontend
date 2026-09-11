@@ -9,9 +9,9 @@ describe('format', () => {
       expect(formatValue('')).toBe('—')
     })
 
-    it('should format numbers with en-US separators', () => {
-      expect(formatValue(128450)).toBe('128,450')
-      expect(formatValue(2456789.5)).toBe('2,456,789.5')
+    it('should format numbers with dot decimals and two fraction digits', () => {
+      expect(formatValue(128450)).toBe('128450.00')
+      expect(formatValue(2456789.5)).toBe('2456789.50')
     })
 
     it('should return original string when not numeric', () => {
