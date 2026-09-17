@@ -136,7 +136,7 @@ function onDownloadFeatures(): void {
       </div>
 
       <div v-if="otherIds.length" class="other-aois">
-        <p class="other-aois__label">Outros próximos</p>
+        <p class="other-aois__label">Nearby areas</p>
         <div class="other-aois__list">
           <button
             v-for="id in otherIds"

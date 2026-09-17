@@ -1,6 +1,6 @@
 export const SCROLL_OFFSET_RATIO = 0.1
 
-/** Rola até o elemento deixando ~10% da viewport de folga acima dele. */
+/** Scrolls to the element leaving ~10% of the viewport as space above it. */
 export function scrollToElement(
   selector: string,
   offsetRatio = SCROLL_OFFSET_RATIO,

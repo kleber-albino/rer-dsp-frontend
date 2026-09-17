@@ -1,34 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import {
-  citiesToSelectOptions,
-  regionsToSelectOptions,
-  statesToSelectOptions,
+  territoryOptionsToSelectOptions,
   totalizersToKpis,
 } from '@/adapters/selectOptionAdapters'
 import { PRIMARY_KPI_CODE } from '@/config/installationConfigFallback'
 
 describe('selectOptionAdapters', () => {
-  describe('statesToSelectOptions', () => {
-    it('should map state id and name to select option', () => {
-      const result = statesToSelectOptions([
-        { id: 'DF', name: 'Distrito Federal', region: 'CW' },
+  describe('territoryOptionsToSelectOptions', () => {
+    it('should map territory id and name to select option', () => {
+      const result = territoryOptionsToSelectOptions([
+        { id: 'DF', name: 'Distrito Federal' },
       ])
 
-      expect(result).toEqual([{ value: 'DF', label: 'DF - Distrito Federal' }])
-    })
-  })
-
-  describe('citiesToSelectOptions', () => {
-    it('should map city id as string value', () => {
-      const result = citiesToSelectOptions([{ id: 5300108, name: 'Brasília' }])
-      expect(result).toEqual([{ value: '5300108', label: 'Brasília' }])
-    })
-  })
-
-  describe('regionsToSelectOptions', () => {
-    it('should map region id and name', () => {
-      const result = regionsToSelectOptions([{ id: 1, name: 'Norte', code: 'N' }])
-      expect(result).toEqual([{ value: '1', label: 'Norte' }])
+      expect(result).toEqual([{ value: 'DF', label: 'Distrito Federal' }])
     })
   })
 

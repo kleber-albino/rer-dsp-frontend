@@ -347,7 +347,7 @@ describe('HomeView', () => {
     expect(showSelectedAoiGeometry).toHaveBeenCalled()
     expect(showDetailButton).toHaveBeenCalled()
     expect(wrapper.text()).not.toContain('Search details')
-    expect(wrapper.text()).not.toContain('Outros próximos')
+    expect(wrapper.text()).not.toContain('Nearby areas')
     expect(wrapper.find('.data-cards-section').exists()).toBe(false)
     expect(wrapper.text()).not.toContain('Registered properties')
     expect(searchFilter.vm.form.identifier).toBe('DF-123')
@@ -358,7 +358,7 @@ describe('HomeView', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('DF-123')
-    expect(wrapper.text()).toContain('Outros próximos')
+    expect(wrapper.text()).toContain('Nearby areas')
     expect(wrapper.text()).toContain('DF-456')
 
     const otherBtn = wrapper

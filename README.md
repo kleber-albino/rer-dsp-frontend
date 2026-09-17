@@ -1,10 +1,10 @@
 # rer-dsp-frontend
 
-> Este repositório é um dos módulos do **DSP (Data Sharing Platform)**, parte do ecossistema RER.
-> A documentação completa do projeto está em **[rer-dsp-docs](https://github.com/Rural-Environmental-Registry/rer-dsp-docs)**.
-> As informações abaixo tratam apenas deste módulo, não do projeto DSP como um todo.
+> This repository is one module of the **DSP (Data Sharing Platform)**, part of the RER ecosystem.
+> Full project documentation lives in **[rer-dsp-docs](https://github.com/Rural-Environmental-Registry/rer-dsp-docs)**.
+> The information below covers this module only, not the DSP project as a whole.
 
-## Qual parte do DSP este módulo é
+## Where this module fits in the DSP
 
 ```mermaid
 flowchart LR
@@ -12,35 +12,35 @@ flowchart LR
     Backend[rer-dsp-backend]
     GeoServerEx[(GeoServer Exhibition)]
 
-    Frontend -- API REST --> Backend
-    Frontend -- mapas/WMS --> GeoServerEx
+    Frontend -- REST API --> Backend
+    Frontend -- maps/WMS --> GeoServerEx
 ```
 
-Downloads passam pela API do backend (que usa o GeoServer Download). O frontend de mapas fala só com o GeoServer Exhibition.
-## Objetivo
+Downloads go through the backend API (which uses GeoServer Download). The map frontend talks only to GeoServer Exhibition.
 
-Interface web para visualização e compartilhamento de dados ambientais rurais entre
-instituições parceiras do RER.
+## Purpose
 
-## Responsabilidades
+Web interface for viewing and sharing rural environmental data among RER partner institutions.
 
-- Exibir dados ambientais e mapas (camadas WMS)
-- Consumir a API REST do `rer-dsp-backend`
-- Prover a experiência de usuário da plataforma DSP
+## Responsibilities
 
-## Tecnologias
+- Display environmental data and maps (WMS layers)
+- Consume the `rer-dsp-backend` REST API
+- Provide the DSP platform user experience
 
-Vue 3, Vite, TypeScript, Tailwind CS.
+## Technologies
 
-## Como executar
+Vue 3, Vite, TypeScript, Tailwind CSS.
+
+## How to run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Ou, preferencialmente, via `rer-dsp-core` (`./start.sh`), que sobe toda a stack.
+Or, preferably, via `rer-dsp-core` (`./start.sh`), which starts the full stack.
 
-## Licença
+## License
 
 [GNU General Public License v3.0](LICENSE)

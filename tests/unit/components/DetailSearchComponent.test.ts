@@ -201,7 +201,7 @@ describe('DetailSearchComponent', () => {
     expect(wrapper.text()).not.toContain('Brasília')
     expect(wrapper.text()).not.toContain('Data de registro')
     expect(wrapper.find('.header-detail').exists()).toBe(false)
-    expect(wrapper.text()).toContain('Outros próximos')
+    expect(wrapper.text()).toContain('Nearby areas')
     expect(wrapper.text()).toContain('GO-1')
 
     const button = wrapper.find('.actions .br-button')

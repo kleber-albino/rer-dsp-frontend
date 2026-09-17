@@ -17,7 +17,7 @@ describe('httpClient', () => {
       vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({ ok: true }),
-        url: 'http://localhost:8080/dsp-backend/state/getAll',
+        url: 'http://localhost:8080/dsp-backend/territory/options',
       }),
     )
   })
@@ -144,9 +144,9 @@ describe('httpClient', () => {
 
   describe('httpGet', () => {
     it('should call fetch with built URL and return JSON', async () => {
-      const data = await httpGet<{ ok: boolean }>('state/getAll')
+      const data = await httpGet<{ ok: boolean }>('territory/options')
 
-      expect(fetch).toHaveBeenCalledWith('http://localhost:8080/dsp-backend/state/getAll')
+      expect(fetch).toHaveBeenCalledWith('http://localhost:8080/dsp-backend/territory/options')
       expect(data).toEqual({ ok: true })
     })
 
@@ -156,15 +156,15 @@ describe('httpClient', () => {
         vi.fn().mockResolvedValue({
           ok: false,
           status: 500,
-          url: 'http://localhost:8080/dsp-backend/state/getAll',
+          url: 'http://localhost:8080/dsp-backend/territory/options',
         }),
       )
 
-      await expect(httpGet('state/getAll')).rejects.toThrow('HTTP 500')
+      await expect(httpGet('territory/options')).rejects.toThrow('HTTP 500')
     })
 
     it('should append query params and skip nullish values', async () => {
-      await httpGet('state/getAll', {
+      await httpGet('territory/options', {
         level2: 'DF',
         level3: undefined,
         active: true,
@@ -173,14 +173,14 @@ describe('httpClient', () => {
       })
 
       expect(fetch).toHaveBeenCalledWith(
-        'http://localhost:8080/dsp-backend/state/getAll?level2=DF&active=true&count=2',
+        'http://localhost:8080/dsp-backend/territory/options?level2=DF&active=true&count=2',
       )
     })
 
     it('should normalize paths that start with slash', async () => {
-      await httpGet('/state/getAll')
+      await httpGet('/territory/options')
 
-      expect(fetch).toHaveBeenCalledWith('http://localhost:8080/dsp-backend/state/getAll')
+      expect(fetch).toHaveBeenCalledWith('http://localhost:8080/dsp-backend/territory/options')
     })
   })
 
