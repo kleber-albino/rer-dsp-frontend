@@ -18,42 +18,6 @@ export interface KpiItem {
   accentColor: string
 }
 
-/** Mock values used when the totalizers API does not respond. */
-export const mockTotalizerValues: TotalizerDTO[] = [
-  {
-    code: PRIMARY_KPI_CODE,
-    name: 'Registered properties',
-    value: 128450,
-    unitOfMeasurement: 'un.',
-    subItemName: 'ha',
-    subItemValue: 2456789,
-  },
-  {
-    code: 'THEME_1',
-    name: 'Theme 1',
-    value: 820100,
-    unitOfMeasurement: 'ha',
-  },
-  {
-    code: 'THEME_2',
-    name: 'Theme 2',
-    value: 310400,
-    unitOfMeasurement: 'ha',
-  },
-  {
-    code: 'THEME_3',
-    name: 'Theme 3',
-    value: 1102300,
-    unitOfMeasurement: 'ha',
-  },
-  {
-    code: 'THEME_4',
-    name: 'Theme 4',
-    value: 990200,
-    unitOfMeasurement: 'ha',
-  },
-]
-
 /**
  * Builds dashboard cards from config (labels/units) + totalizer values.
  * - Up to 5 cards
@@ -129,6 +93,3 @@ function resolveOptionalValue(totalizer?: TotalizerDTO): number | undefined {
   }
   return Number(raw)
 }
-
-/** @deprecated Use resolveHomeKpis(mockTotalizerValues) — kept for import compatibility. */
-export const mockHomeKpis = resolveHomeKpis(mockTotalizerValues)

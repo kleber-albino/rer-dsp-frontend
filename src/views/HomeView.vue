@@ -18,11 +18,7 @@ import {
   type SearchFormConfig,
 } from '@/config/searchHierarchy'
 import { prepareAoiHighlightGeometry } from '@/utils/prepareAoiHighlightGeometry'
-import {
-  mockTotalizerValues,
-  resolveHomeKpis,
-  type KpiItem,
-} from '@/config/homeKpis'
+import { resolveHomeKpis, type KpiItem } from '@/config/homeKpis'
 import { FALLBACK_INSTALLATION_CONFIG } from '@/config/installationConfigFallback'
 import { getInstallationConfig } from '@/services/configService'
 import {
@@ -88,7 +84,7 @@ const detailByIdentifier = ref<DetailByIdentifierDTO | null>(null)
 const pendingDetail = ref<DetailByIdentifierDTO | null>(null)
 const candidateIds = ref<string[]>([])
 const kpiConfig = ref<HomeKpisConfig>(FALLBACK_INSTALLATION_CONFIG.kpis)
-const kpis = ref<KpiItem[]>(resolveHomeKpis(mockTotalizerValues, kpiConfig.value))
+const kpis = ref<KpiItem[]>([])
 const searchConfig = ref<SearchFormConfig>(homeSearchConfig)
 const hierarchyFields = ref<Record<HierarchyLevelKey, HierarchyFieldConfig>>(hierarchyFieldsByKey)
 const mapRef = ref<InstanceType<typeof DspMapComponent> | null>(null)
@@ -328,8 +324,8 @@ async function loadInitialKpis(): Promise<void> {
   try {
     await loadTotalizers([], [])
   } catch (error) {
-    console.warn('Initial KPIs from API unavailable — keeping mock values.', error)
-    kpis.value = resolveHomeKpis(mockTotalizerValues, kpiConfig.value)
+    console.warn('Initial KPIs from API unavailable.', error)
+    kpis.value = []
   }
 }
 

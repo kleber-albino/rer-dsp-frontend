@@ -1,15 +1,26 @@
 import { describe, expect, it } from 'vitest'
-import {
-  MAX_HOME_KPIS,
-  mockTotalizerValues,
-  resolveHomeKpis,
-} from '@/config/homeKpis'
+import { MAX_HOME_KPIS, resolveHomeKpis } from '@/config/homeKpis'
 import {
   FALLBACK_INSTALLATION_CONFIG,
   PRIMARY_KPI_CODE,
 } from '@/config/installationConfigFallback'
 import type { HomeKpisConfig } from '@/types/installationConfig'
 import type { TotalizerDTO } from '@/types/totalizer'
+
+const sampleTotalizers: TotalizerDTO[] = [
+  {
+    code: PRIMARY_KPI_CODE,
+    name: 'Registered properties',
+    value: 10,
+    unitOfMeasurement: 'un.',
+    subItemName: 'ha',
+    subItemValue: 20,
+  },
+  { code: 'THEME_1', name: 'Theme 1', value: 1, unitOfMeasurement: 'ha' },
+  { code: 'THEME_2', name: 'Theme 2', value: 2, unitOfMeasurement: 'ha' },
+  { code: 'THEME_3', name: 'Theme 3', value: 3, unitOfMeasurement: 'ha' },
+  { code: 'THEME_4', name: 'Theme 4', value: 4, unitOfMeasurement: 'ha' },
+]
 
 describe('homeKpis', () => {
   describe('resolveHomeKpis', () => {
@@ -27,11 +38,11 @@ describe('homeKpis', () => {
         ],
       }
 
-      expect(resolveHomeKpis(mockTotalizerValues, config)).toEqual([])
+      expect(resolveHomeKpis(sampleTotalizers, config)).toEqual([])
     })
 
     it('should keep up to MAX_HOME_KPIS items and put primary first', () => {
-      const result = resolveHomeKpis(mockTotalizerValues, FALLBACK_INSTALLATION_CONFIG.kpis)
+      const result = resolveHomeKpis(sampleTotalizers, FALLBACK_INSTALLATION_CONFIG.kpis)
 
       expect(result.length).toBeLessThanOrEqual(MAX_HOME_KPIS)
       expect(result[0].id).toBe(PRIMARY_KPI_CODE)
@@ -62,7 +73,7 @@ describe('homeKpis', () => {
         ],
       }
 
-      const result = resolveHomeKpis(mockTotalizerValues, config)
+      const result = resolveHomeKpis(sampleTotalizers, config)
 
       expect(result[0].id).toBe(PRIMARY_KPI_CODE)
       expect(result[1].id).toBe('THEME_1')
